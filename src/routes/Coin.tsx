@@ -1,9 +1,11 @@
 import styled from "styled-components";
-import { useState,  useEffect } from "react";
+// import { useState,  useEffect } from "react"; // 방법1
 import { useParams, useLocation, Switch, Route, useRouteMatch } from "react-router"
 import { Link } from "react-router-dom";
 import Price from "./Price";
 import Chart from "./Chart";
+import { useQuery } from "react-query"; // 방법2
+import { fetchCoinInfo, fetchCoinPrice } from "../api"; // 방법2
 
 const Container= styled.div`
   padding: 0px 20px;
@@ -135,56 +137,62 @@ interface IPriceData {
 }
 
 function Coin() {
-  const [loading, setLoading] = useState(true)
   const { coinId } = useParams<RouteParams>();
   const { state } =  useLocation<RouteState>();
-  const [info, setInfo] = useState<IInfoData>();
-  const [price, setPrice] = useState<IPriceData>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
 
-  useEffect(() => {
-    (async () => {
-      const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-      const priceData = await (await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
-      setInfo(infoData)
-      setPrice(priceData)
-      setLoading(false)
-    })();
-  }, [coinId]);
+  // 방법 2.
+const {isLoading:infoLoading, data:infoData} = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(coinId))
+const {isLoading:priceLoading, data:priceData} = useQuery<IPriceData>(["price", coinId], () => fetchCoinPrice(coinId))
+const loading = infoLoading || priceLoading
+
+  // 방법 1.
+  // const [loading, setLoading] = useState(true)
+  // const [info, setInfo] = useState<IInfoData>();
+  // const [price, setPrice] = useState<IPriceData>();
+  // useEffect(() => {
+  //   (async () => {
+  //     const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
+  //     const priceData = await (await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
+  //     setInfo(infoData)
+  //     setPrice(priceData)
+  //     setLoading(false)
+  //   })();
+  // }, [coinId]);
   
 
   return (
     <Container>
       <Header>
-          <Title>Coin: { state?.name ? state.name : loading ? "Loading..." : info?.name }</Title>
+          <Title>Coin: { state?.name ? state.name : loading ? "Loading..." : infoData?.name }</Title>
       </Header>
       { loading ? 
-        <Loader>{loading} Loading...</Loader> : 
+        <Loader>Loading...</Loader> : 
         <>
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>{infoData?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{infoData?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{price?.total_supply}</span>
+              <span>{priceData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{price?.max_supply}</span>
+              <span>{priceData?.max_supply}</span>
             </OverviewItem>
           </Overview>
 
@@ -200,11 +208,11 @@ function Coin() {
           
           {/* nested router : router in router */}
           <Switch>
+            <Route path={`/:coinId/chart`}>
+              <Chart coinId={coinId} />
+            </Route>
             <Route path={`/:coinId/price`}>
               <Price />
-            </Route>
-            <Route path={`/:coinId/chart`}>
-              <Chart />
             </Route>
           </Switch>
         </>
