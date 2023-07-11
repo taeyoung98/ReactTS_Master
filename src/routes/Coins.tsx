@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 // import { useState, useEffect } from "react"; // 방법1
 import { useQuery } from "react-query"; // 방법2
 import { fetchCoins } from "../api"; // 방법2
+import { Helmet } from 'react-helmet'
 
 
 const Container= styled.div`
@@ -33,7 +34,7 @@ const Coin = styled.li`
 
   a {
     padding: 20px;
-    color: ${(props) => props.theme.textColor};
+    color: ${(props) => props.theme.bgColor};
     transition: color 0.2s ease-in;
     display: flex;
     justify-content: flex-start;
@@ -76,6 +77,9 @@ function Coins() {
 
     return (
       <Container>
+        <Helmet>
+          <title>Coins</title>
+        </Helmet>
         <Header>
           <Title>Coins</Title>
         </Header>

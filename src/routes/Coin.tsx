@@ -6,6 +6,7 @@ import Price from "./Price";
 import Chart from "./Chart";
 import { useQuery } from "react-query"; // 방법2
 import { fetchCoinInfo, fetchCoinPrice } from "../api"; // 방법2
+import { Helmet } from "react-helmet";
 
 const Container= styled.div`
   padding: 0px 20px;
@@ -143,9 +144,13 @@ function Coin() {
   const chartMatch = useRouteMatch("/:coinId/chart");
 
   // 방법 2.
-const {isLoading:infoLoading, data:infoData} = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(coinId))
-const {isLoading:priceLoading, data:priceData} = useQuery<IPriceData>(["price", coinId], () => fetchCoinPrice(coinId))
-const loading = infoLoading || priceLoading
+  const {isLoading:infoLoading, data:infoData} = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(coinId))
+  const {isLoading:priceLoading, data:priceData} = useQuery<IPriceData>(
+    ["price", coinId], 
+    () => fetchCoinPrice(coinId),
+    { refetchInterval: 5000 }
+  )
+  const loading = infoLoading || priceLoading
 
   // 방법 1.
   // const [loading, setLoading] = useState(true)
@@ -164,6 +169,9 @@ const loading = infoLoading || priceLoading
 
   return (
     <Container>
+      <Helmet>
+        <title>{ state?.name ? state.name : loading ? "Loading..." : infoData?.name }</title>
+      </Helmet>
       <Header>
           <Title>Coin: { state?.name ? state.name : loading ? "Loading..." : infoData?.name }</Title>
       </Header>
@@ -180,8 +188,8 @@ const loading = infoLoading || priceLoading
               <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>${priceData?.quotes.USD.price.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>
