@@ -25,16 +25,16 @@ const Loader = styled.div`
 `;
 const CoinsList = styled.ul``;
 const Coin = styled.li`
-  background-color: white;
+  background-color: ${(props) => props.theme.cardBgColor};
   border-radius: 15px;
   margin-bottom: 10px;
   &:hover a {
     color: ${(props) => props.theme.accentColor};
   }
-
+  
   a {
     padding: 20px;
-    color: ${(props) => props.theme.bgColor};
+    color: ${(props) => props.theme.textColor};
     transition: color 0.2s ease-in;
     display: flex;
     justify-content: flex-start;
@@ -47,6 +47,10 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
+interface ICoinsProps {
+  toggleDark: () => void;
+}
+
 interface ICoin {
   id: string,
   name: string,
@@ -57,7 +61,7 @@ interface ICoin {
   type: string,
 };
 
-function Coins() {
+function Coins({ toggleDark }: ICoinsProps) {
   // 방법2. react-query: useQuery
   const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins, {
     select: (data) => data.slice(0, 100)
@@ -82,6 +86,7 @@ function Coins() {
         </Helmet>
         <Header>
           <Title>Coins</Title>
+          <button onClick={toggleDark}>Toggle Mode</button>
         </Header>
         { isLoading ? 
           <Loader>Loading...</Loader> : 
