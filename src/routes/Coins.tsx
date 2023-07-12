@@ -47,10 +47,6 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
-interface ICoinsProps {
-  toggleDark: () => void;
-}
-
 interface ICoin {
   id: string,
   name: string,
@@ -61,7 +57,7 @@ interface ICoin {
   type: string,
 };
 
-function Coins({ toggleDark }: ICoinsProps) {
+function Coins() {
   // 방법2. react-query: useQuery
   const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins, {
     select: (data) => data.slice(0, 100)
@@ -86,7 +82,6 @@ function Coins({ toggleDark }: ICoinsProps) {
         </Helmet>
         <Header>
           <Title>Coins</Title>
-          <button onClick={toggleDark}>Toggle Mode</button>
         </Header>
         { isLoading ? 
           <Loader>Loading...</Loader> : 

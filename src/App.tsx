@@ -2,7 +2,9 @@ import Router from './Router';
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { darkTheme, lightTheme } from './theme';
-import { useState } from 'react';
+// import { useState } from 'react'; // data binding 방법1. props
+import { useRecoilValue } from 'recoil';
+import { isDarkAtom } from './atom';
 
 // @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Poppins&display=swap');
 const GlobalStyle = createGlobalStyle`
@@ -69,13 +71,17 @@ a {
 `;
 
 function App() {
-  const [isDark, setIsDark] = useState(false)
-  const toggleDark = () => setIsDark((current) => !current);
+  // data binding 방법1. props
+  // const [isDark, setIsDark] = useState(false)
+  // const toggleDark = () => setIsDark((current) => !current);
+
+  // data binding 방법2. recoil (atom)
+  const isDark = useRecoilValue(isDarkAtom)
 
   return (<>
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <GlobalStyle />
-      <Router isDark={isDark} toggleDark={toggleDark} />
+      <Router />
       <ReactQueryDevtools initialIsOpen />
     </ThemeProvider>
   </>);

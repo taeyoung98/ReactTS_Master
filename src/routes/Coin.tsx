@@ -68,9 +68,6 @@ const Tab = styled.span<{ isActive: boolean }>`
   }
 `;
 
-interface ICoinProps {
-  isDark?: boolean;
-}
 interface RouteParams {
   coinId: string;
 }
@@ -140,7 +137,7 @@ interface IPriceData {
   };
 }
 
-function Coin({ isDark }: ICoinProps) {
+function Coin() {
   const { coinId } = useParams<RouteParams>();
   const { state } =  useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coinId/price");
@@ -220,7 +217,7 @@ function Coin({ isDark }: ICoinProps) {
           {/* nested router : router in router */}
           <Switch>
             <Route path={`/:coinId/chart`}>
-              <Chart coinId={coinId} isDark={isDark} />
+              <Chart coinId={coinId}  />
             </Route>
             <Route path={`/:coinId/price`}>
               <Price />
