@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import ToDoList from "./ToDoList";
+import { createGlobalStyle } from "styled-components"
+import ToDoList from "./components/ToDoList"
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -55,20 +55,22 @@ table {
 }
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: ${props => props.theme.bgColor};
-  color: ${props => props.theme.textColor};
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
   line-height: 1.2;
 }
 a {
   text-decoration: none;
 }
-`;
+`
 
 function App() {
-  return (<>
-    <GlobalStyle />
-    <ToDoList />
-  </>);
+  return (
+    <>
+      <GlobalStyle />
+      <ToDoList />
+    </>
+  )
 }
 
-export default App;
+export default App
