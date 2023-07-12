@@ -8,6 +8,7 @@ interface IForm {
   username: string
   password: string
   password1: string
+  extraError?: string
 }
 
 function ToDoList() {
@@ -38,14 +39,19 @@ function ToDoList() {
   // register: (name: string, RegisterOptions?) => ({ onChange, onBlur, name, ref })
   // watch: form의 <input>값들의 변화를 관찰하여 반환하는 함수
   // prettier-ignore
-  const {	register, handleSubmit, formState: { errors } } = useForm<IForm>({ 
-		defaultValues: {
-			email: "@naver.com"
-		}
-	})
-  const onValid = (data: any) => {
-    console.log(data)
+  const {	register, handleSubmit, formState: { errors }, setError } = useForm<IForm>({ 
+    defaultValues: {
+      email: "@naver.com"
+    }
+  })
+
+  const onValid = (data: IForm) => {
+    if (data.password !== data.password1) {
+      setError("password1", { message: "Password are not the same" }, { shouldFocus: true })
+    }
+    // setError("extraError", { message: "Server offline." });
   }
+  console.log(errors)
 
   // NOTE
   // register()가 반환하는 state 객체를 <input>의 props로 사용
@@ -64,14 +70,28 @@ function ToDoList() {
           placeholder="Email"
         />
         <span>{errors?.email?.message}</span>
-        <input {...register("firstName", { required: "write here" })} placeholder="First name" />
+
+        <input
+          {...register("firstName", {
+            required: "write here",
+            validate: {
+              noNico: (value) => (value.includes("nico") ? "no nicos allowed" : true),
+              noNick: (value) => (value.includes("nick") ? "no nick allowed" : true)
+            }
+          })}
+          placeholder="First name"
+        />
         <span>{errors?.firstName?.message}</span>
+
         <input {...register("lastName", { required: "write here" })} placeholder="Last Name" />
         <span>{errors?.lastName?.message}</span>
+
         <input {...register("username", { required: "write here", minLength: 10 })} placeholder="Username" />
         <span>{errors?.username?.message}</span>
+
         <input {...register("password", { required: "write here", minLength: 5 })} placeholder="Password" />
         <span>{errors?.password?.message}</span>
+
         <input
           {...register("password1", {
             required: "Password is required",
@@ -84,6 +104,7 @@ function ToDoList() {
         />
         <span>{errors?.password1?.message}</span>
         <button>add</button>
+        <span>{errors?.extraError?.message}</span>
       </form>
     </div>
   )
