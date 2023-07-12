@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { fetchCoinHistory } from "../api";
 import ApexCharts from "react-apexcharts";
 import { useRecoilValue } from "recoil";
-import { isDarkAtom } from "../atom";
+import { isDarkAtom } from "../atoms";
 
 interface ChartProps {
   coinId: string;

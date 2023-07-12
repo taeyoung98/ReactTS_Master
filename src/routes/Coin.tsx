@@ -1,5 +1,4 @@
 import styled from "styled-components";
-// import { useState,  useEffect } from "react"; // 방법1
 import { useParams, useLocation, Switch, Route, useRouteMatch } from "react-router"
 import { Link } from "react-router-dom";
 import Price from "./Price";

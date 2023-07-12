@@ -2,9 +2,8 @@ import Router from './Router';
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { darkTheme, lightTheme } from './theme';
-// import { useState } from 'react'; // data binding 방법1. props
 import { useRecoilValue } from 'recoil';
-import { isDarkAtom } from './atom';
+import { isDarkAtom } from './atoms';
 
 // @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Poppins&display=swap');
 const GlobalStyle = createGlobalStyle`

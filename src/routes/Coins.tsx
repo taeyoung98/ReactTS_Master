@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useQuery } from "react-query"; // 방법2
 import { fetchCoins } from "../api"; // 방법2
 import { Helmet } from 'react-helmet'
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 
 const Container= styled.div`
@@ -75,6 +77,9 @@ function Coins() {
   //   })();
   //   }, []);
 
+  const setDarkAtom = useSetRecoilState(isDarkAtom)
+  const toggleDarkAtom = () => setDarkAtom(val => !val)
+
     return (
       <Container>
         <Helmet>
@@ -82,6 +87,7 @@ function Coins() {
         </Helmet>
         <Header>
           <Title>Coins</Title>
+          <button onClick={toggleDarkAtom}>toggle button</button>
         </Header>
         { isLoading ? 
           <Loader>Loading...</Loader> : 
